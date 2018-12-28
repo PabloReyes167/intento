@@ -1,0 +1,106 @@
+SqlConnection cnn;
+        SqlDataReader dr;
+        SqlCommand cm;
+
+
+        public Conexion()
+        {
+            try
+            {
+                cnn = new SqlConnection("Data Source=EQUIPO;Initial Catalog=prueba;Integrated Security=True");
+                cnn.Open();
+                Console.Write("conectado a la bd");
+            }
+            catch (Exception ex)
+            {
+                Console.Write("error al conectar a la bd"+ex.ToString());
+            }
+        }
+
+        public void CargarDatosBox1(DropDownList box1)
+        {
+            try
+            {
+                cm = new SqlCommand("SELECT nombre_cliente FROM clientes ",cnn);
+                dr = cm.ExecuteReader();
+
+                while(dr.Read())
+                {
+                    box1.Items.Add(dr["nombre_cliente"].ToString());
+                }
+
+                dr.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.Write("error al cargar datos" + ex.ToString());
+            }
+        }
+
+        public void CargarDatosBox2(DropDownList box2)
+        {
+            try
+            {
+                cm = new SqlCommand("SELECT nombre_producto FROM productos ", cnn);
+                dr = cm.ExecuteReader();
+
+                while (dr.Read())
+                {
+                    box2.Items.Add(dr["nombre_producto"].ToString());
+                }
+
+                dr.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.Write("error al cargar datos" + ex.ToString());
+            }
+        }
+
+        public void mostrartodo(GridView gv)
+        {
+
+            dr.Close();
+
+            String sql;
+            SqlConnection cnn;
+            SqlCommand cm;
+            SqlDataAdapter da;
+            DataSet ds;
+            sql = "Select * from ventas";
+            cnn = new SqlConnection("Data Source=EQUIPO;Initial Catalog=prueba;Integrated Security=True");
+            cnn.Open();
+
+
+            cm = new SqlCommand();
+            cm.CommandText = sql;
+            cm.CommandType = CommandType.Text;
+            cm.Connection = cnn;
+            da = new SqlDataAdapter(cm);
+
+            ds = new DataSet();
+            da.Fill(ds);
+
+            gv.DataSource = ds.Tables[0];
+            gv.DataBind();
+            cnn.Close();
+        }
+        
+        
+        
+        Conexion c = new Conexion();
+            c.CargarDatosBox1(comb1);
+            c.CargarDatosBox2(comb2);
+            //c.mostrartodo(Gv1);
+
+            int suma = 0;
+            if (Gv1.Rows.Count > 0)
+            {
+                foreach (GridViewRow row in Gv1.Rows)
+                {
+                    suma = suma + Convert.ToInt32(row.Cells[3].Text);
+                }
+
+                txttotal.Text = Convert.ToString(suma);
+            }
+    
